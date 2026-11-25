@@ -36,14 +36,17 @@ function main(): number {
   mkdirSync(dirname(OUTPUT_PATH), { recursive: true });
   writeFileSync(OUTPUT_PATH, text + "\n", "utf-8");
 
-  // Read it back and confirm exactly the entry line plus one newline.
+  // Read it back and confirm exactly the entry line plus one newline,
+  // and that what landed on disk still passes the gate on its own.
   const written = readFileSync(OUTPUT_PATH, "utf-8");
-  if (written !== text + "\n") {
+  const writtenLine = written.replace(/\n$/, "");
+  if (written !== text + "\n" || !validLine(writtenLine)) {
     console.error("written entry failed validation");
     return 1;
   }
 
   console.log(`wrote ${text.length} chars to ${OUTPUT_PATH}`);
+  console.log(`entry: ${text}`);
   return 0;
 }
 
